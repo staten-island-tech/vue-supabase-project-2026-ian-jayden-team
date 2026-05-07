@@ -1,6 +1,6 @@
-<script setup lang="ts">
-VITE_SUPABASE_URL=https://fawktaffalkeemtdkoqp.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_DIBLDRPI2-eAlv1slYRteQ_lpIcNQIa
+<script setup lang="js">
+VITE_SUPABASE_URL="https://fawktaffalkeemtdkoqp.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="sb_publishable_DIBLDRPI2-eAlv1slYRteQ_lpIcNQIa"
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
