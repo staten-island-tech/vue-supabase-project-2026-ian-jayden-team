@@ -4,15 +4,15 @@ import HelloWorld from './components/HelloWorld.vue'
 import { ref, onMounted } from 'vue'
 import { supabase } from './supabase'
 
-const fishArray = ref([])
+const transactions = ref([])
 const error = ref(null)
 
 onMounted(async () => {
-  let { data: fishData, error: err } = await supabase.from('Fish').select('*')
+  let { data: transactionData, error: err } = await supabase.from('transactions').select('*')
   if (err) {
     error.value = err.message
   } else {
-    fishArray.value = fishData
+    transactions.value = transactionData
   }
 })
 </script>
@@ -29,12 +29,6 @@ onMounted(async () => {
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
-
-    <ul v-if="error">
-      <li v-for="transaction in transactions" :key="transaction.id">
-        ID: {{ transaction.id }} | User: {{ transaction.user_id }} | ...
-      </li>
-    </ul>
   </header>
 
   <RouterView />
