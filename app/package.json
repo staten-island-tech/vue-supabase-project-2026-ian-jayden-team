@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "supabse-fish-project",
+=======
+  "name": "app",
+>>>>>>> main
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,7 +19,12 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@supabase/supabase-js": "^2.105.3",
+=======
+    "@supabase/supabase-js": "^2.105.1",
+    "env": "^0.0.2",
+>>>>>>> main
     "pinia": "^3.0.4",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
