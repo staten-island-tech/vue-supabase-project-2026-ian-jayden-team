@@ -9,6 +9,7 @@ const error = ref(null)
 
 onMounted(async () => {
   let { data: fishData, error: err } = await supabase.from('Fish').select('*')
+  console.log('Table data loaded')
   if (err) {
     error.value = err.message
   } else {
@@ -31,8 +32,8 @@ onMounted(async () => {
     </div>
 
     <ul v-if="error">
-      <li v-for="transaction in transactions" :key="transaction.id">
-        ID: {{ transaction.id }} | User: {{ transaction.user_id }} | ...
+      <li v-for="fishy in fishArray" :key="fishy.uuid">
+        ID: {{ fishy.uuid }} | User: {{ fishy.fish_name }} | ...
       </li>
     </ul>
   </header>
