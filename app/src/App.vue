@@ -7,6 +7,7 @@ const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
+const displayFish = ref()
 
 onMounted(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name')
@@ -34,11 +35,10 @@ onMounted(async () => {
 })
 
 function fishy() {
-  const displayFish = ref()
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     console.log(fishNumber)
-    displayFish.value = fish.value[fishNumber]
+    displayFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
     console.log(displayFish.value)
   } else if (fishLoadTF.value === false) {
     displayFish.value =
@@ -57,15 +57,17 @@ function fishy() {
       id="coverPic"
       src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
     />
+
+    <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
   </div>
-  <h1>{{ displayFish }}</h1>
+
   <ul v-if="error">
     <h1>error</h1>
   </ul>
 
   <ul v-else>
     <li v-for="fishy in fish" :key="fish.id">
-      ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | ...
+      ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image: <img src="{{ fishy.image }}" />
     </li>
   </ul>
   <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
