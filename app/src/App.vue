@@ -37,6 +37,7 @@ onMounted(async () => {
 <template>
   <div id="titleDiv">
     <h1>Fishing game</h1>
+    <router-link to="/fishview">Press here to play</router-link>
     <img
       id="coverPic"
       src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
@@ -54,6 +55,7 @@ onMounted(async () => {
   </ul>
   <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
 
+  <p>Hey this is to break between the two lists</p>
   <ul v-if="userLoadTF">
     <li v-for="user in users" :key="user.id">ID: {{ user.id }} | User: {{ user.email }} | ...</li>
   </ul>
