@@ -1,9 +1,9 @@
-<script setup >
+<script setup lang="ts">
   import { ref, onMounted } from 'vue'
   import { supabase } from '../utils/supabase'
   
 const fish = ref([])
-const error = ref(null)
+const error = ref("")
 
 onMounted(async () => {
   let { data: fishdata, error: err } = await supabase
@@ -19,6 +19,8 @@ onMounted(async () => {
 </script>
 
 <template>
+
+<h1>grass</h1>
 
 <form action="" method="get" class="form-example">
   <div class="form-example">

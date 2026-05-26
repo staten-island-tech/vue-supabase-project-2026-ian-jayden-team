@@ -20,6 +20,8 @@ onMounted(async () => {
 
 <template>
 
+<RouterView />
+
 <ul v-if="error">
   <h1>error</h1>
 </ul>
