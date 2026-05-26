@@ -15,7 +15,7 @@ onMounted(async () => {
     error.value = err.message
   } else {
     fish.value = fishdata
-    fishLoadTF.value = true
+    fishLoadTF.value = true //stands for fish load true/false
     console.log(fish.value)
   }
 })
@@ -28,10 +28,24 @@ onMounted(async () => {
     error.value = err.message
   } else {
     users.value = userdata
-    userLoadTF.value = true
+    userLoadTF.value = true //stands for user load true/false
     console.log(users.value)
   }
 })
+
+function fishy() {
+  const displayFish = ref()
+  if (fishLoadTF.value === true) {
+    let fishNumber = Math.floor(Math.random() * fish.value.length)
+    console.log(fishNumber)
+    displayFish.value = fish.value[fishNumber]
+    console.log(displayFish.value)
+  } else if (fishLoadTF.value === false) {
+    displayFish.value =
+      'The supabase has not been loaded yet. Please wait a few seconds and try again.'
+    console.log(displayFish.value)
+  }
+}
 </script>
 
 <template>
@@ -39,11 +53,12 @@ onMounted(async () => {
     <h1>Fishing game</h1>
     <router-link to="/fishview">Press here to play</router-link>
     <img
+      @click="fishy()"
       id="coverPic"
       src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
     />
   </div>
-
+  <h1>{{ displayFish }}</h1>
   <ul v-if="error">
     <h1>error</h1>
   </ul>
