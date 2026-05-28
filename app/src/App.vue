@@ -51,7 +51,7 @@ function fishy() {
 <template>
   <div class="flexDiv">
     <h1>Fishing game</h1>
-    <router-link to="/fishview">Press here to play</router-link>
+    <router-link to="/about">Press here to play</router-link>
     <img
       @click="fishy()"
       id="coverPic"
@@ -89,7 +89,7 @@ function fishy() {
   text-align: center;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  width: 60vw;
 }
 #coverPic {
   width: 400px;
