@@ -10,7 +10,7 @@ const userLoadTF = ref(false)
 const displayFish = ref()
 
 onMounted(async () => {
-  let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name')
+  let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
   console.log('This should fetch data from the Fish table')
   if (err) {
     error.value = err.message
@@ -49,7 +49,7 @@ function fishy() {
 </script>
 
 <template>
-  <div id="titleDiv">
+  <div class="flexDiv">
     <h1>Fishing game</h1>
     <router-link to="/fishview">Press here to play</router-link>
     <img
@@ -59,35 +59,46 @@ function fishy() {
     />
 
     <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
+
+    <ul v-if="error">
+      <h1>error</h1>
+    </ul>
+
+    <ul v-else>
+      <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
+        ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
+        <img id="fishyImage" :src="fishy.image" />
+      </li>
+    </ul>
+    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+
+    <p>Hey this is to break between the two lists</p>
+    <ul v-if="userLoadTF">
+      <li class="flexDiv" v-for="user in users" :key="user.id">
+        ID: {{ user.id }} | User: {{ user.email }} | ...
+      </li>
+    </ul>
+    <pre>{{ JSON.stringify(user, null, 2) }}</pre>
   </div>
-
-  <ul v-if="error">
-    <h1>error</h1>
-  </ul>
-
-  <ul v-else>
-    <li v-for="fishy in fish" :key="fish.id">
-      ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image: <img src="{{ fishy.image }}" />
-    </li>
-  </ul>
-  <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
-
-  <p>Hey this is to break between the two lists</p>
-  <ul v-if="userLoadTF">
-    <li v-for="user in users" :key="user.id">ID: {{ user.id }} | User: {{ user.email }} | ...</li>
-  </ul>
-  <pre>{{ JSON.stringify(user, null, 2) }}</pre>
 </template>
 
 <style>
-#titleDiv {
-  text-align: center;
+.flexDiv {
   display: flex;
   flex-direction: column;
+  text-align: center;
   align-items: center;
+  justify-content: center;
+  width: 100vw;
 }
 #coverPic {
   width: 400px;
   height: 400px;
+}
+
+#fishyImage {
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
 }
 </style>
