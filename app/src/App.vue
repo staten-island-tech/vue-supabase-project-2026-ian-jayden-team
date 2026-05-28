@@ -22,14 +22,5 @@ onMounted(async () => {
 
 <RouterView />
 
-<ul v-if="error">
-  <h1>error</h1>
-</ul>
 
-<ul v-else>
-  <li v-for="fishy in fish" :key="fish.id">
-    ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | ...
-  </li>
-</ul>
-<pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
 </template>

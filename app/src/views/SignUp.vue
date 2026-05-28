@@ -22,18 +22,16 @@ onMounted(async () => {
 
 <h1>grass</h1>
 
-<form action="" method="get" class="form-example">
-  <div class="form-example">
-    <label for="name">Enter your name: </label>
-    <input type="text" name="name" id="name" required />
-  </div>
-  <div class="form-example">
-    <label for="email">Enter your email: </label>
-    <input type="email" name="email" id="email" required />
-  </div>
-  <div class="form-example">
-    <input type="submit" value="Subscribe!" />
-  </div>
+<form id="myForm">
+    <label>
+      Username:
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      Email:
+      <input type="email" name="email" required />
+    </label>
+    <button type="submit">Submit</button>
 </form>
-
+<button type="button">Add to favorites</button>
 </template>
