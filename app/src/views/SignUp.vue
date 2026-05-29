@@ -1,37 +1,40 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
-  import { supabase } from '../utils/supabase'
-  
-const fish = ref([])
-const error = ref("")
+import { ref } from 'vue'
+import { supabase } from '../utils/supabase'
 
-onMounted(async () => {
-  let { data: fishdata, error: err } = await supabase
-    .from('Fish')
-    .select('id, fish_name')
-  if (err) {
-    error.value = err.message
-  } else {
-    fish.value = fishdata
-    console.log(fish.value)
-  }
-})
+let username = ref('')
+let email = ref('')
+let password = ref('')
+
+function handleSubmit(e: Event) {
+  e.preventDefault()
+  let signUpInfo = ({ username: username.value, email: email.value, password: password.value })
+  console.log(signUpInfo)
+  console.log(username.value, email.value, password.value)
+
+}
 </script>
 
 <template>
+  <h1>Sign Up</h1>
 
-<h1>grass</h1>
-
-<form id="myForm">
+  <!-- use @submit.prevent to stop full page reload -->
+  <form id="myForm" @submit="handleSubmit">
     <label>
       Username:
-      <input type="text" name="name" required />
+      <input type="text" name="name" v-model="username" required />
     </label>
+
     <label>
       Email:
-      <input type="email" name="email" required />
+      <input type="email" name="email" v-model="email" required />
     </label>
+
+    <label>
+      Password:
+      <input type="password" name="password" v-model="password" required />
+    </label>
+
     <button type="submit">Submit</button>
-</form>
-<button type="button">Add to favorites</button>
+  </form>
 </template>
