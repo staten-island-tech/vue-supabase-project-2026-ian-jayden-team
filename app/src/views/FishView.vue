@@ -1,12 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 
+import { supabase } from '../utils/supabase'
+
 const fish = ref([])
 const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
 const displayFish = ref()
+const displayFishImage = ref()
 
 onMounted(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
@@ -37,6 +40,7 @@ function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     console.log(fishNumber)
+    displayFishImage.value = fish.value[fishNumber].image
     displayFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
     console.log(displayFish.value)
   } else if (fishLoadTF.value === false) {
@@ -57,7 +61,11 @@ function fishy() {
       src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
     />
 
-    <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
+    <h1 v-if="displayFish === null">Please click the image above to catch a fish!</h1>
+    <div v-else class="flexDiv">
+      <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
+      <img id="fishyImage" :src="displayFishImage" />
+    </div>
 
     <ul v-if="error">
       <h1>error</h1>
