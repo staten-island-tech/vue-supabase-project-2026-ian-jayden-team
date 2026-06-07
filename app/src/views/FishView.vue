@@ -9,10 +9,10 @@ const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
-const displayFish = ref(null)
-const displayFishImage = ref()
+// const displayFish = ref(null)
+// const displayFishImage = ref()
 const fishStore = useFishCaughtStore()
-const { storeFish, storeFishImage } = storeToRefs(fishStore)
+const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
 
 onMounted(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
@@ -42,14 +42,18 @@ onMounted(async () => {
 function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
-    console.log(fishNumber)
-    displayFishImage.value = fish.value[fishNumber].image
-    displayFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
-    console.log(displayFish.value)
+    storeFishImage.value = fish.value[fishNumber].image
+    storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
+    // storeFishArray.value.push({
+    //   name: JSON.stringify(fish.value[fishNumber].fish_name),
+    //   img: fish.value[fishNumber].image,
+    // })
+    fishStore.push()
+    console.log(JSON.stringify(storeFishArray.value))
   } else if (fishLoadTF.value === false) {
-    displayFish.value =
+    storeFish.value =
       'The supabase has not been loaded yet. Please wait a few seconds and try again.'
-    console.log(displayFish.value)
+    console.log(storeFish.value)
   }
 }
 </script>
@@ -57,22 +61,18 @@ function fishy() {
 <template>
   <div class="flexDiv">
     <h1>Fishing game</h1>
-    <router-link to="/about">Press here to play</router-link>
+    <router-link to="/caughtfishview">Click here to see the fish you caught!</router-link>
     <img
       @click="fishy()"
       id="coverPic"
       src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
     />
 
-    <h1 v-if="displayFish === null">Please click the image above to catch a fish!</h1>
-    <div v-else class="flexDiv">
-      <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
-      <img id="fishyImage" :src="displayFishImage" />
-    </div>
-    <div class="flexDiv">
+    <div v-if="storeFish != null" class="flexDiv">
       <h1>You caught the {{ storeFish }} fish! Congratulations!</h1>
       <img id="fishyImage" :src="storeFishImage" />
     </div>
+    <h1 v-else>Please click the image above to catch a fish!</h1>
 
     <ul v-if="error">
       <h1>error</h1>
