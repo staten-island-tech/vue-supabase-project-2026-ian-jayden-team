@@ -9,7 +9,8 @@
     }
   ],
   "compilerOptions": {
-    "allowJs": true
+    "allowJs": true,
+    "noImplicitThis": true
   }
   /* "include": [
     "C:/Users/jaydenz108/Documents/GitHub/vue-supabase-project-2026-ian-jayden-team/app/src/views/FishView.vue"

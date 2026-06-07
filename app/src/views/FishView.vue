@@ -1,15 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-
+import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
+import { storeToRefs } from 'pinia'
 
 const fish = ref([])
 const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
-const displayFish = ref()
+const displayFish = ref(null)
 const displayFishImage = ref()
+const fishStore = useFishCaughtStore()
+const { storeFish, storeFishImage } = storeToRefs(fishStore)
 
 onMounted(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
@@ -65,6 +68,10 @@ function fishy() {
     <div v-else class="flexDiv">
       <h1>You caught the {{ displayFish }} fish! Congratulations!</h1>
       <img id="fishyImage" :src="displayFishImage" />
+    </div>
+    <div class="flexDiv">
+      <h1>You caught the {{ storeFish }} fish! Congratulations!</h1>
+      <img id="fishyImage" :src="storeFishImage" />
     </div>
 
     <ul v-if="error">
