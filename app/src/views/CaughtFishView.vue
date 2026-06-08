@@ -6,6 +6,23 @@ import { storeToRefs } from 'pinia'
 
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+const weightMinRef = ref()
+
+onMounted(async () => {
+  let { data: weightdata, error: err } = await supabase
+    .from('Fish')
+    .select('weight')
+    .order('weight', { ascending: true })
+    .limit(1)
+    .single()
+  console.log('This should fetch data from the Fish table')
+  if (err) {
+    error.value = err.message
+  } else {
+    weightMinRef.value = weightdata?.weight ?? null
+    //the first ? does the optional chaining thing  so there's no "weight": 1 by reading the weight property and the ?? makes the variable display null if the result is null
+  }
+})
 </script>
 
 <template>
@@ -22,6 +39,8 @@ const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStor
     </li>
 
     <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+
+    <p>Did you know the lightest fish you can catch in this game is {{ weightMinRef }} pound!</p>
   </div>
 </template>
 

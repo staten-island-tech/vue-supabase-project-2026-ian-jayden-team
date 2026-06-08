@@ -28,7 +28,7 @@ onMounted(async () => {
 
 //second onMounted function
 onMounted(async () => {
-  let { data: userdata, error: err } = await supabase.from('users').select('id, email')
+  let { data: userdata, error: err } = await supabase.from('userss').select('id, email')
   console.log('This should fetch data from the User table')
   if (err) {
     error.value = err.message
