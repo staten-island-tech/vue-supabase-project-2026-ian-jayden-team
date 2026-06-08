@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import { ref } from 'vue'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
@@ -30,10 +30,11 @@ let password = ref('')
 <template>
   <h1>Sign Up</h1>
   <p>input username</p>
-  <input v-model="username">
+  <input v-model="username" />
   <p>input email</p>
-  <input v-model="email">
+  <input v-model="email" />
   <p>input password</p>
-  <input v-model="password">
+  <input v-model="password" />
   <button @click="submit">Sign Up</button>
+  <button @click="giveUserdata">give userdata</button>
 </template>

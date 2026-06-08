@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AppView from '../App.vue'
 import FishView from '../views/FishView.vue'
 import SignUp from '../views/SignUp.vue'
+import CaughtFishView from '@/views/CaughtFishView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,7 @@ const router = createRouter({
       name: 'fishview',
       component: FishView,
     },
+    { path: '/caughtfishview', name: 'caughtfishview', component: CaughtFishView },
 
     {
       path: '/about',
