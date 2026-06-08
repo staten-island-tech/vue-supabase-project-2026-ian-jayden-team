@@ -1,0 +1,118 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useFishCaughtStore } from '@/stores/fishCaughtStore'
+import { supabase } from '../utils/supabase'
+import { storeToRefs } from 'pinia'
+
+const fish = ref([])
+const fishLoadTF = ref(false)
+const error = ref(null)
+const users = ref([])
+const userLoadTF = ref(false)
+// const displayFish = ref(null)
+// const displayFishImage = ref()
+const fishStore = useFishCaughtStore()
+const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+
+onMounted(async () => {
+  let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
+  console.log('This should fetch data from the Fish table')
+  if (err) {
+    error.value = err.message
+  } else {
+    fish.value = fishdata
+    fishLoadTF.value = true //stands for fish load true/false
+    console.log(fish.value)
+  }
+})
+
+//second onMounted function
+onMounted(async () => {
+  let { data: userdata, error: err } = await supabase.from('users').select('id, email')
+  console.log('This should fetch data from the User table')
+  if (err) {
+    error.value = err.message
+  } else {
+    users.value = userdata
+    userLoadTF.value = true //stands for user load true/false
+    console.log(users.value)
+  }
+})
+
+function fishy() {
+  if (fishLoadTF.value === true) {
+    let fishNumber = Math.floor(Math.random() * fish.value.length)
+    storeFishImage.value = fish.value[fishNumber].image
+    storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
+    // storeFishArray.value.push({
+    //   name: JSON.stringify(fish.value[fishNumber].fish_name),
+    //   img: fish.value[fishNumber].image,
+    // })
+    fishStore.push()
+    console.log(JSON.stringify(storeFishArray.value))
+  } else if (fishLoadTF.value === false) {
+    storeFish.value =
+      'The supabase has not been loaded yet. Please wait a few seconds and try again.'
+    console.log(storeFish.value)
+  }
+}
+</script>
+
+<template>
+  <div class="flexDiv">
+    <h1>Fishing game</h1>
+    <router-link to="/caughtfishview">Click here to see the fish you caught!</router-link>
+    <img
+      @click="fishy()"
+      id="coverPic"
+      src="https://comicbook.com/wp-content/uploads/sites/4/2025/06/evangelion_rei-fishing_girlfriend-of-steel-01.jpg?resize=2000,1125"
+    />
+
+    <div v-if="storeFish != null" class="flexDiv">
+      <h1>You caught the {{ storeFish }} fish! Congratulations!</h1>
+      <img id="fishyImage" :src="storeFishImage" />
+    </div>
+    <h1 v-else>Please click the image above to catch a fish!</h1>
+
+    <ul v-if="error">
+      <h1>error</h1>
+    </ul>
+
+    <ul v-else>
+      <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
+        ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
+        <img id="fishyImage" :src="fishy.image" />
+      </li>
+    </ul>
+    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+
+    <p>Hey this is to break between the two lists</p>
+    <ul v-if="userLoadTF">
+      <li class="flexDiv" v-for="user in users" :key="user.id">
+        ID: {{ user.id }} | User: {{ user.email }} | ...
+      </li>
+    </ul>
+    <pre>{{ JSON.stringify(user, null, 2) }}</pre>
+  </div>
+</template>
+
+<style>
+.flexDiv {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 60vw;
+}
+#coverPic {
+  width: 400px;
+  height: 400px;
+}
+
+#fishyImage {
+  width: 100px;
+  height: 100px;
+  margin-top: 10px;
+}
+</style>
