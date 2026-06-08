@@ -16,10 +16,15 @@ async function submit() {
   console.log(email.value)
   console.log(username.value)
   console.log(password.value)
-  const {  } = await supabase
+  const { err } = await supabase
     .from('users')
     .update({ username: username.value })
     .eq('email', email.value)
+  
+}
+
+function goToFish(){
+  router.push('/fishview')
 }
 
 let username = ref('')
@@ -36,4 +41,5 @@ let password = ref('')
   <p>input password</p>
   <input v-model="password" />
   <button @click="submit">Sign Up</button>
+  <router-link to="/fishview">Start Fishing!</router-link>
 </template>
