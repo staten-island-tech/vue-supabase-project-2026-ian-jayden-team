@@ -36,5 +36,4 @@ let password = ref('')
   <p>input password</p>
   <input v-model="password" />
   <button @click="submit">Sign Up</button>
-  <button @click="giveUserdata">give userdata</button>
 </template>
