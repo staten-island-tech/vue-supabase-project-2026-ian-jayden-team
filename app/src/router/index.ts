@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AppView from '../App.vue'
 import FishView from '../views/FishView.vue'
 import SignUp from '../views/SignUp.vue'
+import LogIn from '@/views/LogIn.vue'
 import CaughtFishView from '@/views/CaughtFishView.vue'
 
 const router = createRouter({
@@ -12,6 +13,11 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: SignUp,
+    },
+    {
+      path: '/',
+      name: 'login',
+      component: LogIn,
     },
     {
       path: '/fishview',

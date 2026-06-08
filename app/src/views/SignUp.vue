@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
 
@@ -7,6 +8,8 @@ const supabaseData = createClient('https://fawktaffalkeemtdkoqp.supabase.co', 's
 
 const users = ref([])
 const errorr = ref(null)
+
+const router = useRouter()
 
 async function submit() {
   let { data, error } = await supabaseData.auth.signUp({
@@ -20,11 +23,7 @@ async function submit() {
     .from('users')
     .update({ username: username.value })
     .eq('email', email.value)
-  
-}
-
-function goToFish(){
-  router.push('/fishview')
+  await router.push({path : '/fishview'})
 }
 
 let username = ref('')
@@ -41,5 +40,5 @@ let password = ref('')
   <p>input password</p>
   <input v-model="password" />
   <button @click="submit">Sign Up</button>
-  <router-link to="/fishview">Start Fishing!</router-link>
+  <router-link to="/">Already have an account? Log in!</router-link>
 </template>
