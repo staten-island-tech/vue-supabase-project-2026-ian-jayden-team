@@ -9,6 +9,8 @@ const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
+const sussies = ref([])
+const susLoadTF = ref(false)
 // const displayFish = ref(null)
 // const displayFishImage = ref()
 const fishStore = useFishCaughtStore()
@@ -28,7 +30,7 @@ onMounted(async () => {
 
 //second onMounted function
 onMounted(async () => {
-  let { data: userdata, error: err } = await supabase.from('users').select('id, email')
+  let { data: userdata, error: err } = await supabase.from('userss').select('id, email')
   console.log('This should fetch data from the User table')
   if (err) {
     error.value = err.message
@@ -36,6 +38,20 @@ onMounted(async () => {
     users.value = userdata
     userLoadTF.value = true //stands for user load true/false
     console.log(users.value)
+  }
+})
+
+onMounted(async () => {
+  let { data: susdata, error: err } = await supabase
+    .from('Fish')
+    .select('id, fish_name, image, sussy_fish(status)')
+  console.log('This should fetch data from the fish and sus table')
+  if (err) {
+    error.value = err.message
+  } else {
+    sussies.value = susdata
+    susLoadTF.value = true //stands for user load true/false
+    console.log(sussies.value)
   }
 })
 
@@ -79,20 +95,27 @@ function fishy() {
     </ul>
 
     <ul v-else>
-      <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
-        ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
+      <li class="flexDiv" v-for="fishy in fish" :key="fishy.id">
+        ID: {{ fishy.id }} | Name: {{ fishy.fish_name }} | Image:
         <img id="fishyImage" :src="fishy.image" />
       </li>
     </ul>
     <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
 
+    <ul v-if="susLoadTF">
+      <li class="flexDiv" v-for="sus in sussies" :key="sus.id">
+        ID: {{ sus.id }} | Name: {{ sus.fish_name }} | Is_Sus?: {{ sus.status }}
+      </li>
+    </ul>
+    <pre>{{ JSON.stringify(sus, null, 2) }}</pre>
+    <!-- 
     <p>Hey this is to break between the two lists</p>
     <ul v-if="userLoadTF">
       <li class="flexDiv" v-for="user in users" :key="user.id">
-        ID: {{ user.id }} | User: {{ user.email }} | ...
+        ID: {{ user.id }} | TestEmail: {{ user.email }} | ...
       </li>
     </ul>
-    <pre>{{ JSON.stringify(user, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(user, null, 2) }}</pre> -->
   </div>
 </template>
 

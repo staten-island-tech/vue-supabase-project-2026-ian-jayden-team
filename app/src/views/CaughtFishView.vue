@@ -6,6 +6,33 @@ import { storeToRefs } from 'pinia'
 
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+const fishWeightRef = ref()
+const error = ref(null)
+
+// onMounted(async () => {
+//   let { data: weightdata, error: weight_err } = await supabase.from('Fish').select('MIN(weight)')
+//   console.log('This should fetch the minimum weight')
+
+//   if (weight_err) {
+//     error.value = weight_err.message
+//   } else {
+//     fishWeightRef.value = JSON.stringify(weightdata)
+//     console.log(fishWeightRef.value)
+//   }
+// })
+
+//aggregate (using MIN() didn't work)
+onMounted(async () => {
+  const { data, error } = await supabase
+    .from('Fish')
+    .select('weight')
+    .order('weight', { ascending: true })
+    .limit(1)
+
+  if (!error && data?.length) {
+    fishWeightRef.value = data[0].weight
+  }
+})
 </script>
 
 <template>
@@ -21,7 +48,12 @@ const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStor
       <img id="fishyImage" :src="element.img" />
     </li>
 
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(element, null, 2) }}</pre>
+
+    <ul v-if="error">
+      <h1>error</h1>
+    </ul>
+    <p>Fun fact: the lightest fish you can catch in this game is {{ fishWeightRef }} pound!</p>
   </div>
 </template>
 
