@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
@@ -14,7 +14,7 @@ const userLoadTF = ref(false)
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
 
-onMounted(async () => {
+onBeforeMount(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
   console.log('This should fetch data from the Fish table')
   if (err) {
@@ -26,8 +26,8 @@ onMounted(async () => {
   }
 })
 
-//second onMounted function
-onMounted(async () => {
+//second onBeforeMount function
+onBeforeMount(async () => {
   let { data: userdata, error: err } = await supabase.from('users').select('id, email')
   console.log('This should fetch data from the User table')
   if (err) {
