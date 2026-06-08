@@ -42,19 +42,17 @@ const joinFishArray = ref([])
 const joinSusArray = ref([])
 const joinTotalArray = ref([])
 onMounted(async () => {
-  const [fishResp, sussyResp] = await Promise.all([
-    supabase.from('Fish').select('fish_name'),
-    supabase.from('sussy_fish').select('name, status'),
-  ])
+  let { data: fishdata, error: err } = await supabase.from('Fish').select('fish_name')
+  let { data: sussydata, error: err2 } = await supabase.from('sussy_fish').select('name, status')
 
-  if (fishResp.error || sussyResp.error) {
+  if (err || err2) {
     // handle errors (example)
-    console.error(fishResp.error ?? sussyResp.error)
+    console.error(err ?? err2)
     return
   }
 
-  joinFishArray.value = fishResp.data
-  joinSusArray.value = sussyResp.data
+  joinFishArray.value = fishdata
+  joinSusArray.value = sussydata
 
   for (let i = 0; i < joinFishArray.value.length; i++) {
     for (let j = 0; j < joinSusArray.value.length; j++) {
@@ -78,12 +76,14 @@ onMounted(async () => {
   for (let i = 0; i < joinFishArray.value.length; i++) {
     joinTotalArray.value.set(joinFishArray.value[i], joinSusArray.value[i])
   } */
+  console.log('fishdata', fishdata)
+  console.log('sussydata', sussydata)
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
 //second onMounted function
 onMounted(async () => {
-  let { data: userdata, error: err } = await supabase.from('userss').select('id, email')
+  let { data: userdata, error: err } = await supabase.from('users').select('id, email')
   console.log('This should fetch data from the User table')
   if (err) {
     error.value = err.message
@@ -124,7 +124,7 @@ function fishy() {
     />
 
     <div v-if="storeFish != null" class="flexDiv">
-      <h1>You caught the {{ storeFish }} fish! Congratulations!</h1>
+      <h1>You caught the {{ storeFish }} fish! Congratulations !</h1>
       <img id="fishyImage" :src="storeFishImage" />
     </div>
     <h1 v-else>Please click the image above to catch a fish!</h1>
