@@ -58,8 +58,8 @@ onMounted(async () => {
     for (let j = 0; j < joinSusArray.value.length; j++) {
       if (joinFishArray.value[i].fish_name === joinSusArray.value[j].name) {
         joinTotalArray.value.push({
-          fish: joinFishArray.value[i],
-          sussy: joinSusArray.value[j],
+          fish: joinFishArray.value[i]?.fish_name,
+          sussy: joinSusArray.value[j]?.status,
         })
       }
     }
@@ -143,7 +143,7 @@ function fishy() {
 
     <ul>
       <li class="flexDiv" v-for="el in joinTotalArray" :key="el.fish">
-        Here are some sussy fish: {{ el.fish }} ; {{ el.sussy }}
+        Here are some potentially sus fish: {{ el.fish }} (Sus Status: {{ el.sussy }})
       </li>
     </ul>
 

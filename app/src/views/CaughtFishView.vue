@@ -23,6 +23,7 @@ onMounted(async () => {
     weightMinRef.value = weightdata?.weight ?? null
     nameMinRef.value = weightdata?.fish_name ?? null
     //the first ? does the optional chaining thing  so there's no "weight": 1 by reading the weight property and the ?? makes the variable display null if the result is null
+    //im pretty sure the ?? null isn't needed though
   }
 })
 
@@ -37,7 +38,7 @@ storeFishArray.value.splice(0, 1)
       id="coverPic"
       src="https://preview.redd.it/rei-fishing-collection-v0-tv4wosi41r7e1.jpg?width=640&crop=smart&auto=webp&s=7f07c9fe17511f38d5c4873d3f544a46941f662b"
     />
-    <li class="flexDiv" v-for="element in storeFishArray" :key="element.name">
+    <li class="flexDiv" v-for="element in storeFishArray">
       Name: {{ element.name }}
       <img id="fishyImage" :src="element.img" />
     </li>
