@@ -20,11 +20,11 @@ const router = createRouter({
       component: LogIn,
     },
     {
-      path: '/fishview',
+      path: '/fishing',
       name: 'fishview',
       component: FishView,
     },
-    { path: '/caughtfishview', name: 'caughtfishview', component: CaughtFishView },
+    { path: '/caughtfish', name: 'caughtfishview', component: CaughtFishView },
 
     {
       path: '/about',

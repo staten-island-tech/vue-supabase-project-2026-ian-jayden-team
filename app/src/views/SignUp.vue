@@ -23,7 +23,7 @@ async function submit() {
     .from('users')
     .update({ username: username.value })
     .eq('email', email.value)
-  await router.push({path : '/fishview'})
+  await router.push({path : '/fishing'})
 }
 
 let username = ref('')

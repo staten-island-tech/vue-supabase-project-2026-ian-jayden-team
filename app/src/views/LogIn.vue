@@ -17,7 +17,7 @@ async function submit() {
     console.log("Incorrect email or password")
     }
     else {
-        await router.push({path : '/fishview'})
+        await router.push({path : '/fishing'})
     }
 }
 
