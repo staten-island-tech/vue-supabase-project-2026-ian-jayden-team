@@ -33,11 +33,11 @@ let password = ref('')
 
 <template>
   <h1>Sign Up</h1>
-  <p>input username</p>
+  <p>username</p>
   <input v-model="username" />
-  <p>input email</p>
+  <p>email</p>
   <input v-model="email" />
-  <p>input password</p>
+  <p>password</p>
   <input v-model="password" />
   <button @click="submit">Sign Up</button>
   <router-link to="/">Already have an account? Log in!</router-link>

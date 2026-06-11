@@ -27,9 +27,9 @@ let password = ref('')
 
 <template>
   <h1>Log In</h1>
-  <p>input email</p>
+  <p>email</p>
   <input v-model="email" />
-  <p>input password</p>
+  <p>password</p>
   <input v-model="password" />
   <button @click="submit">Log In</button>
   <router-link to="/signup">Don't have an account? Sign up!</router-link>
