@@ -38,17 +38,16 @@ storeFishArray.value.splice(0, 1)
       id="coverPic"
       src="https://preview.redd.it/rei-fishing-collection-v0-tv4wosi41r7e1.jpg?width=640&crop=smart&auto=webp&s=7f07c9fe17511f38d5c4873d3f544a46941f662b"
     />
+    <p>
+      Fun Fact! Did you know the lightest fish you can catch in this game is the
+      {{ nameMinRef }} fish which weighs {{ weightMinRef }} pound!
+    </p>
     <li class="flexDiv" v-for="element in storeFishArray">
       Name: {{ element.name }}
       <img id="fishyImage" :src="element.img" />
     </li>
 
     <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
-
-    <p>
-      Did you know the lightest fish you can catch in this game is the {{ nameMinRef }} fish which
-      weighs {{ weightMinRef }} pound!
-    </p>
   </div>
 </template>
 

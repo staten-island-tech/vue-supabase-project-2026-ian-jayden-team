@@ -133,13 +133,13 @@ function fishy() {
       <h1>error</h1>
     </ul>
 
-    <ul v-else>
+    <!--<ul v-else>
       <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
         ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
         <img id="fishyImage" :src="fishy.image" />
       </li>
     </ul>
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>-->
 
     <ul>
       <li class="flexDiv" v-for="el in joinTotalArray" :key="el.fish">
