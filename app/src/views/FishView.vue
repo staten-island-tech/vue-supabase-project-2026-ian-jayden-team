@@ -26,8 +26,63 @@ onBeforeMount(async () => {
   }
 })
 
-//second onBeforeMount function
-onBeforeMount(async () => {
+/* onMounted(async () => {
+  let { data: joindata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
+  console.log('This should fetch data from the Fish table')
+  if (err) {
+    error.value = err.message
+  } else {
+    fish.value = fishdata
+    fishLoadTF.value = true //stands for fish load true/false
+    console.log(fish.value)
+  }
+})
+ */
+const joinFishArray = ref([])
+const joinSusArray = ref([])
+const joinTotalArray = ref([])
+onMounted(async () => {
+  let { data: fishdata, error: err } = await supabase.from('Fish').select('fish_name')
+  let { data: sussydata, error: err2 } = await supabase.from('sussy_fish').select('name, status')
+
+  if (err || err2) {
+    // handle errors (example)
+    console.error(err ?? err2)
+    return
+  }
+
+  joinFishArray.value = fishdata
+  joinSusArray.value = sussydata
+
+  for (let i = 0; i < joinFishArray.value.length; i++) {
+    for (let j = 0; j < joinSusArray.value.length; j++) {
+      if (joinFishArray.value[i].fish_name === joinSusArray.value[j].name) {
+        joinTotalArray.value.push({
+          fish: joinFishArray.value[i]?.fish_name,
+          sussy: joinSusArray.value[j]?.status,
+        })
+      }
+    }
+  }
+
+  /*   for (let i = 0; i < joinFishArray.value.length; i++) {
+    for (let z = 0; i < joinSusArray.value.length; z++) {
+      if (joinFishArray.value[i].fish_name != joinSusArray.value[z].name) {
+        joinFishArray.value.splice(i, 1)
+      }
+    }
+  }
+
+  for (let i = 0; i < joinFishArray.value.length; i++) {
+    joinTotalArray.value.set(joinFishArray.value[i], joinSusArray.value[i])
+  } */
+  console.log('fishdata', fishdata)
+  console.log('sussydata', sussydata)
+  console.log('Total is ' + JSON.stringify(joinTotalArray.value))
+})
+
+//second onMounted function
+onMounted(async () => {
   let { data: userdata, error: err } = await supabase.from('users').select('id, email')
   console.log('This should fetch data from the User table')
   if (err) {
@@ -69,7 +124,7 @@ function fishy() {
     />
 
     <div v-if="storeFish != null" class="flexDiv">
-      <h1>You caught the {{ storeFish }} fish! Congratulations!</h1>
+      <h1>You caught the {{ storeFish }} fish! Congratulations !</h1>
       <img id="fishyImage" :src="storeFishImage" />
     </div>
     <h1 v-else>Please click the image above to catch a fish!</h1>
@@ -86,13 +141,19 @@ function fishy() {
     </ul>
     <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
 
-    <p>Hey this is to break between the two lists</p>
+    <ul>
+      <li class="flexDiv" v-for="el in joinTotalArray" :key="el.fish">
+        Here are some potentially sus fish: {{ el.fish }} (Sus Status: {{ el.sussy }})
+      </li>
+    </ul>
+
+    <!--  <p>Hey this is to break between the two lists</p>
     <ul v-if="userLoadTF">
       <li class="flexDiv" v-for="user in users" :key="user.id">
         ID: {{ user.id }} | User: {{ user.email }} | ...
       </li>
     </ul>
-    <pre>{{ JSON.stringify(user, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(user, null, 2) }}</pre> -->
   </div>
 </template>
 
