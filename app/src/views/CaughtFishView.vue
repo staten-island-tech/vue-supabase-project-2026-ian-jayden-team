@@ -10,6 +10,7 @@ const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStor
 const weightMinRef = ref()
 const nameMinRef = ref()
 const router = useRouter()
+let theme = ref('light')
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -56,9 +57,25 @@ async function signOut() {
     await router.push({ path: '/' })
   }
 }
+
+function switchTheme() {
+  if (theme.value === 'light') {
+    theme.value = 'dark'
+  } else {
+    theme.value = 'light'
+  }
+   if (theme.value === 'dark') {
+       document.documentElement.style.setProperty('--background-colour', 'navy');
+       document.documentElement.style.setProperty('--text-color', 'lightblue');
+   } else {
+       document.documentElement.style.setProperty('--background-colour', 'lightblue');
+       document.documentElement.style.setProperty('--text-color', 'navy');
+   }
+}
 </script>
 
 <template>
+  <button @click="switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Your caught fish:</h1>
     <router-link to="/fishing">Click here to go back to fishing!</router-link>
@@ -81,6 +98,10 @@ async function signOut() {
 </template>
 
 <style>
+body {
+  background-color: var(--background-colour);
+  color: var(--text-color);
+}
 .flexDiv {
   display: flex;
   flex-direction: column;

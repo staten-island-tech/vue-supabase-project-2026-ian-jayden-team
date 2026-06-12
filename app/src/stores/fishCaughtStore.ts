@@ -6,13 +6,9 @@ export const useFishCaughtStore = defineStore('storeId', () => {
   const storeFishImage = ref()
   const storeFishArray = ref([{}])
 
-  const storeFishTotal = computed(
-    () => storeFish.value + ' has the appearance of a ' + storeFishImage,
-  )
-
   function push() {
     storeFishArray.value.push({ name: storeFish.value, img: storeFishImage.value })
   }
 
-  return { storeFish, storeFishImage, storeFishArray, storeFishTotal, push }
+  return { storeFish, storeFishImage, storeFishArray, push }
 })

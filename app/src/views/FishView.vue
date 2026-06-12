@@ -15,6 +15,7 @@ const userLoadTF = ref(false)
 // const displayFishImage = ref()
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+let theme = ref('light')
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -137,9 +138,25 @@ async function signOut() {
     await router.push({ path: '/' })
   }
 }
+
+function switchTheme() {
+  if (theme.value === 'light') {
+    theme.value = 'dark'
+  } else {
+    theme.value = 'light'
+  }
+   if (theme.value === 'dark') {
+       document.documentElement.style.setProperty('--background-colour', 'navy');
+       document.documentElement.style.setProperty('--text-color', 'lightblue');
+   } else {
+       document.documentElement.style.setProperty('--background-colour', 'lightblue');
+       document.documentElement.style.setProperty('--text-color', 'navy');
+   }
+}
 </script>
 
 <template>
+  <button @click="switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Fishing game</h1>
     <router-link to="/caughtfish">Click here to see the fish you caught!</router-link>
@@ -160,14 +177,6 @@ async function signOut() {
       <h1>error</h1>
     </ul>
 
-    <ul v-else>
-      <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
-        ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
-        <img id="fishyImage" :src="fishy.image" />
-      </li>
-    </ul>
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
-
     <ul>
       <li class="flexDiv" v-for="el in joinTotalArray" :key="el.fish">
         Here are some potentially sus fish: {{ el.fish }} (Sus Status: {{ el.sussy }})
@@ -185,6 +194,16 @@ async function signOut() {
 </template>
 
 <style>
+:root {
+--background-colour: lightblue;
+--text-color: navy;
+}
+
+body {
+  background-color: var(--background-colour);
+  color: var(--text-color);
+}
+
 .flexDiv {
   display: flex;
   flex-direction: column;
