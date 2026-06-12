@@ -9,8 +9,6 @@ const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
 const userLoadTF = ref(false)
-// const displayFish = ref(null)
-// const displayFishImage = ref()
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
 
@@ -26,18 +24,6 @@ onBeforeMount(async () => {
   }
 })
 
-/* onMounted(async () => {
-  let { data: joindata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
-  console.log('This should fetch data from the Fish table')
-  if (err) {
-    error.value = err.message
-  } else {
-    fish.value = fishdata
-    fishLoadTF.value = true //stands for fish load true/false
-    console.log(fish.value)
-  }
-})
- */
 const joinFishArray = ref([])
 const joinSusArray = ref([])
 const joinTotalArray = ref([])
@@ -65,17 +51,6 @@ onMounted(async () => {
     }
   }
 
-  /*   for (let i = 0; i < joinFishArray.value.length; i++) {
-    for (let z = 0; i < joinSusArray.value.length; z++) {
-      if (joinFishArray.value[i].fish_name != joinSusArray.value[z].name) {
-        joinFishArray.value.splice(i, 1)
-      }
-    }
-  }
-
-  for (let i = 0; i < joinFishArray.value.length; i++) {
-    joinTotalArray.value.set(joinFishArray.value[i], joinSusArray.value[i])
-  } */
   console.log('fishdata', fishdata)
   console.log('sussydata', sussydata)
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
@@ -99,10 +74,6 @@ function fishy() {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     storeFishImage.value = fish.value[fishNumber].image
     storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
-    // storeFishArray.value.push({
-    //   name: JSON.stringify(fish.value[fishNumber].fish_name),
-    //   img: fish.value[fishNumber].image,
-    // })
     fishStore.push()
     console.log(JSON.stringify(storeFishArray.value))
   } else if (fishLoadTF.value === false) {
@@ -133,27 +104,11 @@ function fishy() {
       <h1>error</h1>
     </ul>
 
-    <!--<ul v-else>
-      <li class="flexDiv" v-for="fishy in fish" :key="fish.id">
-        ID: {{ fishy.id }} | User: {{ fishy.fish_name }} | Image:
-        <img id="fishyImage" :src="fishy.image" />
-      </li>
-    </ul>
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>-->
-
     <ul>
       <li class="flexDiv" v-for="el in joinTotalArray" :key="el.fish">
         Here are some potentially sus fish: {{ el.fish }} (Sus Status: {{ el.sussy }})
       </li>
     </ul>
-
-    <!--  <p>Hey this is to break between the two lists</p>
-    <ul v-if="userLoadTF">
-      <li class="flexDiv" v-for="user in users" :key="user.id">
-        ID: {{ user.id }} | User: {{ user.email }} | ...
-      </li>
-    </ul>
-    <pre>{{ JSON.stringify(user, null, 2) }}</pre> -->
   </div>
 </template>
 
