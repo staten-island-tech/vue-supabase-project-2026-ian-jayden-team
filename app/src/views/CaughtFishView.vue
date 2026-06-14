@@ -93,7 +93,12 @@ function switchTheme() {
       <img id="fishyImage" :src="element.img" />
     </li>
 
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(element, null, 2) }}</pre>
+
+    <ul v-if="error">
+      <h1>error</h1>
+    </ul>
+    <p>Fun fact: the lightest fish you can catch in this game is {{ fishWeightRef }} pound!</p>
   </div>
 </template>
 
