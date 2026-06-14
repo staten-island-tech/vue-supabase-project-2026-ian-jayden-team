@@ -3,14 +3,32 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
 const fish = ref([])
 const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
+const router = useRouter()
 const userLoadTF = ref(false)
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+let theme = ref('light')
+
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (!session || !session.session) {
+    console.log('No active session found. Redirecting to login.')
+    await router.push({ path: '/' })
+  }
+  else {
+    console.log('Active session found:', session.session)
+  }
+})
 
 onBeforeMount(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
@@ -69,12 +87,38 @@ function fishy() {
     console.log(storeFish.value)
   }
 }
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    console.error('Error signing out:', error.message)
+  } else {
+    await router.push({ path: '/' })
+  }
+}
+
+function switchTheme() {
+  if (theme.value === 'light') {
+    theme.value = 'dark'
+  } else {
+    theme.value = 'light'
+  }
+   if (theme.value === 'dark') {
+       document.documentElement.style.setProperty('--background-colour', 'navy');
+       document.documentElement.style.setProperty('--text-color', 'lightblue');
+   } else {
+       document.documentElement.style.setProperty('--background-colour', 'lightblue');
+       document.documentElement.style.setProperty('--text-color', 'navy');
+   }
+}
 </script>
 
 <template>
+  <button @click="switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Fishing game</h1>
-    <router-link to="/caughtfishview">Click here to see the fish you caught!</router-link>
+    <router-link to="/caughtfish">Click here to see the fish you caught!</router-link>
+    <button @click="signOut()">Sign Out</button>
     <img
       @click="fishy()"
       id="coverPic"
@@ -100,6 +144,16 @@ function fishy() {
 </template>
 
 <style>
+:root {
+--background-colour: lightblue;
+--text-color: navy;
+}
+
+body {
+  background-color: var(--background-colour);
+  color: var(--text-color);
+}
+
 .flexDiv {
   display: flex;
   flex-direction: column;

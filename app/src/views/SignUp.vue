@@ -4,6 +4,18 @@ import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
 
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (session && session.session) {
+    console.log('Active session found:', session.session)
+    await router.push({ path: '/fishing' })
+  }
+})
+
 const supabaseData = createClient(
   'https://fawktaffalkeemtdkoqp.supabase.co',
   'sb_publishable_DIBLDRPI2-eAlv1slYRteQ_lpIcNQIa',
@@ -26,7 +38,7 @@ async function submit() {
     .from('users')
     .update({ username: username.value })
     .eq('email', email.value)
-  await router.push({ path: '/fishview' })
+  await router.push({path : '/fishing'})
 }
 
 let username = ref('')

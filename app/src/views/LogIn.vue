@@ -1,8 +1,20 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
+
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (session && session.session) {
+    console.log('Active session found:', session.session)
+    await router.push({ path: '/fishing' })
+  }
+})
 
 const supabaseData = createClient(
   'https://fawktaffalkeemtdkoqp.supabase.co',
@@ -15,12 +27,13 @@ async function submit() {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
-  })
-  if (error) {
-    console.log('Incorrect email or password')
-  } else {
-    await router.push({ path: '/fishview' })
-  }
+    })
+    if (error) {
+    console.log("Incorrect email or password")
+    }
+    else {
+        await router.push({path : '/fishing'})
+    }
 }
 
 let email = ref('')
