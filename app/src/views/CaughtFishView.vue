@@ -6,33 +6,28 @@ import { storeToRefs } from 'pinia'
 
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
-const fishWeightRef = ref()
-const error = ref(null)
+const weightMinRef = ref()
+const nameMinRef = ref()
 
-// onMounted(async () => {
-//   let { data: weightdata, error: weight_err } = await supabase.from('Fish').select('MIN(weight)')
-//   console.log('This should fetch the minimum weight')
-
-//   if (weight_err) {
-//     error.value = weight_err.message
-//   } else {
-//     fishWeightRef.value = JSON.stringify(weightdata)
-//     console.log(fishWeightRef.value)
-//   }
-// })
-
-//aggregate (using MIN() didn't work)
 onMounted(async () => {
-  const { data, error } = await supabase
+  let { data: weightdata, error: err } = await supabase
     .from('Fish')
-    .select('weight')
+    .select('weight, fish_name')
     .order('weight', { ascending: true })
     .limit(1)
-
-  if (!error && data?.length) {
-    fishWeightRef.value = data[0].weight
+    .single()
+  console.log('This should fetch data from the Fish table')
+  if (err) {
+    error.value = err.message
+  } else {
+    weightMinRef.value = weightdata?.weight ?? null
+    nameMinRef.value = weightdata?.fish_name ?? null
+    //the first ? does the optional chaining thing  so there's no "weight": 1 by reading the weight property and the ?? makes the variable display null if the result is null
+    //im pretty sure the ?? null isn't needed though
   }
 })
+
+storeFishArray.value.splice(0, 1)
 </script>
 
 <template>
@@ -43,7 +38,11 @@ onMounted(async () => {
       id="coverPic"
       src="https://preview.redd.it/rei-fishing-collection-v0-tv4wosi41r7e1.jpg?width=640&crop=smart&auto=webp&s=7f07c9fe17511f38d5c4873d3f544a46941f662b"
     />
-    <li class="flexDiv" v-for="element in storeFishArray" :key="element.name">
+    <p>
+      Fun Fact! Did you know the lightest fish you can catch in this game is the
+      {{ nameMinRef }} fish which weighs {{ weightMinRef }} pound!
+    </p>
+    <li class="flexDiv" v-for="element in storeFishArray">
       Name: {{ element.name }}
       <img id="fishyImage" :src="element.img" />
     </li>
