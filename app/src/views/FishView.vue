@@ -56,33 +56,6 @@ onMounted(async () => {
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
-//second onMounted function
-onMounted(async () => {
-  let { data: userdata, error: err } = await supabase.from('userss').select('id, email')
-  console.log('This should fetch data from the User table')
-  if (err) {
-    error.value = err.message
-  } else {
-    users.value = userdata
-    userLoadTF.value = true //stands for user load true/false
-    console.log(users.value)
-  }
-})
-
-onMounted(async () => {
-  let { data: susdata, error: err } = await supabase
-    .from('Fish')
-    .select('id, fish_name, image, sussy_fish(status)')
-  console.log('This should fetch data from the fish and sus table')
-  if (err) {
-    error.value = err.message
-  } else {
-    sussies.value = susdata
-    susLoadTF.value = true //stands for user load true/false
-    console.log(sussies.value)
-  }
-})
-
 function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
