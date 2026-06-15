@@ -1,8 +1,12 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue'
+import { userEmailStore } from '@/stores/emailStore'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
+
+const emailStore = userEmailStore()
+const { userEmail } = storeToRefs(emailStore)
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -36,14 +40,13 @@ async function submit() {
     }
 }
 
-let email = ref('')
 let password = ref('')
 </script>
 
 <template>
   <h1>Log In</h1>
   <p>Email</p>
-  <input v-model="email" placeholder="Enter your email here" />
+  <input v-model="userEmail.value" placeholder="Enter your email here" />
   <p>Password</p>
   <input v-model="password" placeholder="Enter your password here" />
   <button @click="submit">Log In</button>
