@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount, onUpdated } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
+import { useThemeSwitchStore } from '@/stores/themeSwitchStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -13,7 +14,8 @@ const router = useRouter()
 const userLoadTF = ref(false)
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
-let theme = ref('light')
+const themeStore = useThemeSwitchStore()
+const { theme, switchTheme } = storeToRefs(themeStore)
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -96,25 +98,10 @@ async function signOut() {
     await router.push({ path: '/' })
   }
 }
-
-function switchTheme() {
-  if (theme.value === 'light') {
-    theme.value = 'dark'
-  } else {
-    theme.value = 'light'
-  }
-   if (theme.value === 'dark') {
-       document.documentElement.style.setProperty('--background-colour', 'navy');
-       document.documentElement.style.setProperty('--text-color', 'lightblue');
-   } else {
-       document.documentElement.style.setProperty('--background-colour', 'lightblue');
-       document.documentElement.style.setProperty('--text-color', 'navy');
-   }
-}
 </script>
 
 <template>
-  <button @click="switchTheme">Switch Theme</button>
+  <button @click="themeStore.switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Fishing game</h1>
     <router-link to="/caughtfish">Click here to see the fish you caught!</router-link>
