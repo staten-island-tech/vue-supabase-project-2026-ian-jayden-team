@@ -42,6 +42,28 @@ onBeforeMount(async () => {
   }
 })
 
+let { data: fishdata, error: err } = await supabase.from('users').select('email')
+
+if (err || err2) {
+  // handle errors (example)
+  console.error(err ?? err2)
+  return
+}
+
+joinFishArray.value = fishdata
+joinSusArray.value = sussydata
+
+for (let i = 0; i < joinFishArray.value.length; i++) {
+  for (let j = 0; j < joinSusArray.value.length; j++) {
+    if (joinFishArray.value[i].fish_name === joinSusArray.value[j].name) {
+      joinTotalArray.value.push({
+        fish: joinFishArray.value[i]?.fish_name,
+        sussy: joinSusArray.value[j]?.status,
+      })
+    }
+  }
+}
+
 const joinFishArray = ref([])
 const joinSusArray = ref([])
 const joinTotalArray = ref([])
