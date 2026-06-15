@@ -4,6 +4,7 @@ import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { useThemeSwitchStore } from '@/stores/themeSwitchStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
 const fish = ref([])
@@ -26,8 +27,7 @@ onBeforeMount(async () => {
   if (!session || !session.session) {
     console.log('No active session found. Redirecting to login.')
     await router.push({ path: '/' })
-  }
-  else {
+  } else {
     console.log('Active session found:', session.session)
   }
 })
@@ -156,8 +156,8 @@ async function signOut() {
 
 <style>
 :root {
---background-colour: lightblue;
---text-color: navy;
+  --background-colour: lightblue;
+  --text-color: navy;
 }
 
 body {

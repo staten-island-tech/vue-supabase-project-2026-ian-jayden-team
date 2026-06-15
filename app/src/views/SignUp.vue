@@ -3,7 +3,11 @@ import { ref, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 
+const authStore = useAuthStore()
+const { storeEmail, storeUUID } = storeToRefs(authStore)
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
   if (sessionError) {
@@ -34,11 +38,26 @@ async function submit() {
   console.log(email.value)
   console.log(username.value)
   console.log(password.value)
+  storeEmail.value = email.value
+  console.log(storeEmail.value)
+  let { data: authData, error: leError } = await supabase.from('users').select('id, email')
+  console.log('This should fetch data from the users table')
+  if (leError) {
+    console.log(leError.message)
+  } else {
+    authArray.value = authData
+    for (let i = 0; i < authArray.value.length; i++) {
+      if (authArray.value[i].email === storeEmail.value) {
+        storeUUID.value = authArray.value[i].id
+        console.log(storeUUID.value)
+      }
+    }
+  }
   const { err } = await supabase
     .from('users')
     .update({ username: username.value })
     .eq('email', email.value)
-  await router.push({path : '/fishing'})
+  await router.push({ path: '/fishing' })
 }
 
 let username = ref('')

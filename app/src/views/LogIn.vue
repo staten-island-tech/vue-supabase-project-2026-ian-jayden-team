@@ -4,6 +4,12 @@ import { userEmailStore } from '@/stores/emailStore'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { storeEmail, storeUUID } = storeToRefs(authStore)
+const authArray = ref([])
 
 const emailStore = userEmailStore()
 const { userEmail } = storeToRefs(emailStore)
@@ -31,13 +37,27 @@ async function submit() {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email.value,
     password: password.value,
-    })
-    if (error) {
-    console.log("Incorrect email or password")
+  })
+  storeEmail.value = email.value
+  console.log(storeEmail.value)
+  let { data: authData, error: err } = await supabase.from('users').select('id, email')
+  console.log('This should fetch data from the users table')
+  if (err) {
+    console.log(err.message)
+  } else {
+    authArray.value = authData
+    for (let i = 0; i < authArray.value.length; i++) {
+      if (authArray.value[i].email === storeEmail.value) {
+        storeUUID.value = authArray.value[i].id
+        console.log(storeUUID.value)
+      }
     }
-    else {
-        await router.push({path : '/fishing'})
-    }
+  }
+  if (error) {
+    console.log('Incorrect email or password')
+  } else {
+    await router.push({ path: '/fishview' })
+  }
 }
 
 let password = ref('')
