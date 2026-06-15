@@ -17,6 +17,8 @@ const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
 const themeStore = useThemeSwitchStore()
 const { theme, switchTheme } = storeToRefs(themeStore)
+const authStore = useAuthStore()
+const { storeEmail, storeUUID } = storeToRefs(authStore)
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -98,14 +100,27 @@ onMounted(async () => {
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
+
+
 async function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     storeFishImage.value = fish.value[fishNumber].image
     storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
+    let { data: userdata, error: err } = await supabase.from('users').select('email')
+    if (err) {
+      console.error('Error fetching user data:', err.message)
+      return
+    }
+    for (let i = 0; i < userdata.length; i++) {
+      if (userdata[i].email === storeEmail.value) {
+        storeUUID.value = userdata[i].id
+        console.log(storeUUID.value)
+      }
+    }
     const { error } = await supabase
       .from('Caught Fish')
-      .insert( fish_id: fish.value[fishNumber].id, user_id: )
+      .insert({ fish_id: fish.value[fishNumber].id, user_id: storeUUID.value })
     console.log(JSON.stringify(storeFishArray.value))
   } else if (fishLoadTF.value === false) {
     storeFish.value =
