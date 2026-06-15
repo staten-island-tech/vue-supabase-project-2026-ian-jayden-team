@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 
 const fish = ref([])
 const fishLoadTF = ref(false)

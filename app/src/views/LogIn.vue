@@ -3,6 +3,12 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { storeEmail, storeUUID } = storeToRefs(authStore)
+const authArray = ref([])
 
 const supabaseData = createClient(
   'https://fawktaffalkeemtdkoqp.supabase.co',
@@ -16,6 +22,21 @@ async function submit() {
     email: email.value,
     password: password.value,
   })
+  storeEmail.value = email.value
+  console.log(storeEmail.value)
+  let { data: authData, error: err } = await supabase.from('users').select('id, email')
+  console.log('This should fetch data from the users table')
+  if (err) {
+    console.log(err.message)
+  } else {
+    authArray.value = authData
+    for (let i = 0; i < authArray.value.length; i++) {
+      if (authArray.value[i].email === storeEmail.value) {
+        storeUUID.value = authArray.value[i].id
+        console.log(storeUUID.value)
+      }
+    }
+  }
   if (error) {
     console.log('Incorrect email or password')
   } else {
