@@ -4,14 +4,31 @@ import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
 const fish = ref([])
 const fishLoadTF = ref(false)
 const error = ref(null)
 const users = ref([])
+const router = useRouter()
 const userLoadTF = ref(false)
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
+let theme = ref('light')
+
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (!session || !session.session) {
+    console.log('No active session found. Redirecting to login.')
+    await router.push({ path: '/' })
+  } else {
+    console.log('Active session found:', session.session)
+  }
+})
 
 onBeforeMount(async () => {
   let { data: fishdata, error: err } = await supabase.from('Fish').select('id, fish_name, image')
@@ -57,19 +74,6 @@ onMounted(async () => {
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
-//second onMounted function
-onMounted(async () => {
-  let { data: userdata, error: err } = await supabase.from('users').select('id, email')
-  console.log('This should fetch data from the User table')
-  if (err) {
-    error.value = err.message
-  } else {
-    users.value = userdata
-    userLoadTF.value = true //stands for user load true/false
-    console.log(users.value)
-  }
-})
-
 function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
@@ -83,12 +87,38 @@ function fishy() {
     console.log(storeFish.value)
   }
 }
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    console.error('Error signing out:', error.message)
+  } else {
+    await router.push({ path: '/' })
+  }
+}
+
+function switchTheme() {
+  if (theme.value === 'light') {
+    theme.value = 'dark'
+  } else {
+    theme.value = 'light'
+  }
+  if (theme.value === 'dark') {
+    document.documentElement.style.setProperty('--background-colour', 'navy')
+    document.documentElement.style.setProperty('--text-color', 'lightblue')
+  } else {
+    document.documentElement.style.setProperty('--background-colour', 'lightblue')
+    document.documentElement.style.setProperty('--text-color', 'navy')
+  }
+}
 </script>
 
 <template>
+  <button @click="switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Fishing game</h1>
-    <router-link to="/caughtfishview">Click here to see the fish you caught!</router-link>
+    <router-link to="/caughtfish">Click here to see the fish you caught!</router-link>
+    <button @click="signOut()">Sign Out</button>
     <img
       @click="fishy()"
       id="coverPic"
@@ -114,6 +144,16 @@ function fishy() {
 </template>
 
 <style>
+:root {
+  --background-colour: lightblue;
+  --text-color: navy;
+}
+
+body {
+  background-color: var(--background-colour);
+  color: var(--text-color);
+}
+
 .flexDiv {
   display: flex;
   flex-direction: column;

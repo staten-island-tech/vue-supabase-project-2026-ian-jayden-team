@@ -1,13 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
 
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
 const weightMinRef = ref()
 const nameMinRef = ref()
+const router = useRouter()
+let theme = ref('light')
+
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (!session || !session.session) {
+    console.log('No active session found. Redirecting to login.')
+    await router.push({ path: '/' })
+  }
+  else {
+    console.log('Active session found:', session.session)
+  }
+})
 
 onMounted(async () => {
   let { data: weightdata, error: err } = await supabase
@@ -28,12 +46,40 @@ onMounted(async () => {
 })
 
 storeFishArray.value.splice(0, 1)
+
+async function signOut() {
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    console.log("error")
+    console.error('Error signing out:', error.message)
+  } else {
+    console.log("signing out")
+    await router.push({ path: '/' })
+  }
+}
+
+function switchTheme() {
+  if (theme.value === 'light') {
+    theme.value = 'dark'
+  } else {
+    theme.value = 'light'
+  }
+   if (theme.value === 'dark') {
+       document.documentElement.style.setProperty('--background-colour', 'navy');
+       document.documentElement.style.setProperty('--text-color', 'lightblue');
+   } else {
+       document.documentElement.style.setProperty('--background-colour', 'lightblue');
+       document.documentElement.style.setProperty('--text-color', 'navy');
+   }
+}
 </script>
 
 <template>
+  <button @click="switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Your caught fish:</h1>
-    <router-link to="/fishview">Click here to go back to fishing!</router-link>
+    <router-link to="/fishing">Click here to go back to fishing!</router-link>
+    <button @click="signOut()">Sign Out</button>
     <img
       id="coverPic"
       src="https://preview.redd.it/rei-fishing-collection-v0-tv4wosi41r7e1.jpg?width=640&crop=smart&auto=webp&s=7f07c9fe17511f38d5c4873d3f544a46941f662b"
@@ -47,11 +93,20 @@ storeFishArray.value.splice(0, 1)
       <img id="fishyImage" :src="element.img" />
     </li>
 
-    <pre>{{ JSON.stringify(fishy, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(element, null, 2) }}</pre>
+
+    <ul v-if="error">
+      <h1>error</h1>
+    </ul>
+    <p>Fun fact: the lightest fish you can catch in this game is {{ fishWeightRef }} pound!</p>
   </div>
 </template>
 
 <style>
+body {
+  background-color: var(--background-colour);
+  color: var(--text-color);
+}
 .flexDiv {
   display: flex;
   flex-direction: column;

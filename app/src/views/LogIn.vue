@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
@@ -9,6 +9,18 @@ import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 const { storeEmail, storeUUID } = storeToRefs(authStore)
 const authArray = ref([])
+
+onBeforeMount(async () => {
+  const { data: session, error: sessionError } = await supabase.auth.getSession()
+  if (sessionError) {
+    console.error('Error fetching session:', sessionError.message)
+    return
+  }
+  if (session && session.session) {
+    console.log('Active session found:', session.session)
+    await router.push({ path: '/fishing' })
+  }
+})
 
 const supabaseData = createClient(
   'https://fawktaffalkeemtdkoqp.supabase.co',
