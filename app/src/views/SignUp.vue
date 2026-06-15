@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'

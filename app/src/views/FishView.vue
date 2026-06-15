@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeMount } from 'vue'
+import { ref, onMounted, onBeforeMount, onUpdated } from 'vue'
 import { useFishCaughtStore } from '@/stores/fishCaughtStore'
+import { useThemeSwitchStore } from '@/stores/themeSwitchStore'
 import { supabase } from '../utils/supabase'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
@@ -14,7 +15,8 @@ const router = useRouter()
 const userLoadTF = ref(false)
 const fishStore = useFishCaughtStore()
 const { storeFish, storeFishImage, storeFishArray, push } = storeToRefs(fishStore)
-let theme = ref('light')
+const themeStore = useThemeSwitchStore()
+const { theme, switchTheme } = storeToRefs(themeStore)
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -41,6 +43,28 @@ onBeforeMount(async () => {
     console.log(fish.value)
   }
 })
+
+let { data: fishdata, error: err } = await supabase.from('users').select('email')
+
+if (err || err2) {
+  // handle errors (example)
+  console.error(err ?? err2)
+  return
+}
+
+joinFishArray.value = fishdata
+joinSusArray.value = sussydata
+
+for (let i = 0; i < joinFishArray.value.length; i++) {
+  for (let j = 0; j < joinSusArray.value.length; j++) {
+    if (joinFishArray.value[i].fish_name === joinSusArray.value[j].name) {
+      joinTotalArray.value.push({
+        fish: joinFishArray.value[i]?.fish_name,
+        sussy: joinSusArray.value[j]?.status,
+      })
+    }
+  }
+}
 
 const joinFishArray = ref([])
 const joinSusArray = ref([])
@@ -74,12 +98,14 @@ onMounted(async () => {
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
-function fishy() {
+async function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     storeFishImage.value = fish.value[fishNumber].image
     storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
-    fishStore.push()
+    const { error } = await supabase
+      .from('Caught Fish')
+      .insert( fish_id: fish.value[fishNumber].id, user_id: )
     console.log(JSON.stringify(storeFishArray.value))
   } else if (fishLoadTF.value === false) {
     storeFish.value =
@@ -96,25 +122,10 @@ async function signOut() {
     await router.push({ path: '/' })
   }
 }
-
-function switchTheme() {
-  if (theme.value === 'light') {
-    theme.value = 'dark'
-  } else {
-    theme.value = 'light'
-  }
-  if (theme.value === 'dark') {
-    document.documentElement.style.setProperty('--background-colour', 'navy')
-    document.documentElement.style.setProperty('--text-color', 'lightblue')
-  } else {
-    document.documentElement.style.setProperty('--background-colour', 'lightblue')
-    document.documentElement.style.setProperty('--text-color', 'navy')
-  }
-}
 </script>
 
 <template>
-  <button @click="switchTheme">Switch Theme</button>
+  <button @click="themeStore.switchTheme">Switch Theme</button>
   <div class="flexDiv">
     <h1>Fishing game</h1>
     <router-link to="/caughtfish">Click here to see the fish you caught!</router-link>
