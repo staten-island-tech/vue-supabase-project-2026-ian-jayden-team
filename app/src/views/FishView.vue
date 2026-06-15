@@ -76,12 +76,14 @@ onMounted(async () => {
   console.log('Total is ' + JSON.stringify(joinTotalArray.value))
 })
 
-function fishy() {
+async function fishy() {
   if (fishLoadTF.value === true) {
     let fishNumber = Math.floor(Math.random() * fish.value.length)
     storeFishImage.value = fish.value[fishNumber].image
     storeFish.value = JSON.stringify(fish.value[fishNumber].fish_name)
-    fishStore.push()
+    const { error } = await supabase
+      .from('Caught Fish')
+      .insert( fish_id: fish.value[fishNumber].id, user_id: )
     console.log(JSON.stringify(storeFishArray.value))
   } else if (fishLoadTF.value === false) {
     storeFish.value =
