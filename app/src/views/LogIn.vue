@@ -1,6 +1,5 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue'
-import { userEmailStore } from '@/stores/emailStore'
 import { useRouter } from 'vue-router'
 import { supabase } from '../utils/supabase'
 import { createClient } from '@supabase/supabase-js'
@@ -10,9 +9,6 @@ import { useAuthStore } from '@/stores/auth'
 const authStore = useAuthStore()
 const { storeEmail, storeUUID } = storeToRefs(authStore)
 const authArray = ref([])
-
-const emailStore = userEmailStore()
-const { userEmail } = storeToRefs(emailStore)
 
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
@@ -35,7 +31,7 @@ const router = useRouter()
 
 async function submit() {
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.value,
+    email: storeEmail.value,
     password: password.value,
   })
   storeEmail.value = email.value
@@ -66,7 +62,7 @@ let password = ref('')
 <template>
   <h1>Log In</h1>
   <p>Email</p>
-  <input v-model="userEmail.value" placeholder="Enter your email here" />
+  <input v-model="storeEmail" placeholder="Enter your email here" />
   <p>Password</p>
   <input v-model="password" placeholder="Enter your password here" />
   <button @click="submit">Log In</button>

@@ -6,8 +6,6 @@ import { createClient } from '@supabase/supabase-js'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore()
-const { storeEmail, storeUUID } = storeToRefs(authStore)
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
   if (sessionError) {

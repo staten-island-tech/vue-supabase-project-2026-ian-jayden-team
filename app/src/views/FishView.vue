@@ -20,6 +20,10 @@ const { theme, switchTheme } = storeToRefs(themeStore)
 const authStore = useAuthStore()
 const { storeEmail, storeUUID } = storeToRefs(authStore)
 
+onMounted(async () => {
+  console.log(storeEmail.value)
+})
+
 onBeforeMount(async () => {
   const { data: session, error: sessionError } = await supabase.auth.getSession()
   if (sessionError) {
@@ -47,12 +51,6 @@ onBeforeMount(async () => {
 })
 
 let { data: fishdata, error: err } = await supabase.from('users').select('email')
-
-if (err || err2) {
-  // handle errors (example)
-  console.error(err ?? err2)
-  return
-}
 
 joinFishArray.value = fishdata
 joinSusArray.value = sussydata
